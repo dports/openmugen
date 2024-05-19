@@ -77,10 +77,9 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install \
-            automake \
             dylibbundler \
-            libsdl1.2-dev \
-            libsdl-image1.2-dev
+            sdl \
+            sdl_image
 
       - name: Install dependencies (MSYS2)
         if: runner.os == 'Windows'
@@ -93,8 +92,8 @@ jobs:
             autotools
             zip
             ${{ matrix.config.msys-env }}-gcc
-            ${{ matrix.config.msys-env }}-SDL1.2
-            ${{ matrix.config.msys-env }}-SDL1.2_image
+            ${{ matrix.config.msys-env }}-SDL
+            ${{ matrix.config.msys-env }}-SDL_image
 
       - uses: actions/checkout@v4
         with:
@@ -103,8 +102,7 @@ jobs:
       - name: Configure
         env:
           CC: ${{ matrix.config.compiler }}
-        run: |
-          ./autogen.sh
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         run: make -j4
